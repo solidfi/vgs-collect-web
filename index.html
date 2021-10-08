@@ -1,0 +1,126 @@
+<!-- Copyright 2021 Solid Financial Technologies, Inc -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="./style.css" />
+        <script type="text/javascript" src="https://js.verygoodvault.com/vgs-collect/2.11.0/vgs-collect.js"></script>
+    </head>
+    <body>
+        <div class="">
+            <form id="input-form">
+                <input id="VGS-Vault-Id" class="form-field" placeholder="VGS Vault Id" />
+                <input id="contact-id" class="form-field" placeholder="Contact Id" />
+                <input id="debit-card-token" class="form-field" placeholder="Debit Card Token" />
+                <select id="VGS-env" class="form-field">
+                    <option value="sandbox">Sandbox</option>
+                    <option value="production">Production</option>
+                </select>
+                <button type="submit" class="btn">
+                    Next
+                </button>
+            </form>
+            <div id="card-details">
+                <h2>Card Details:</h2>
+                <form id="card-form">
+                    <div id="card-number" class="form-field"></div>
+                    <div class="group">
+                        <div id="card-cvc" class="form-field"></div>
+                        <div id="card-expiration-date" class="form-field"></div>
+                    </div>
+
+                    <button type="submit" class="btn">
+                        Submit
+                    </button>
+                </form>
+            </div>
+            <pre id="result">Submit a form to see result.</pre>
+        </div>
+
+        <!--Include script with VGS Collect form initialization-->
+        <script>
+            var form = null;
+            var contactId = null;
+            var debitCardToken = null;
+            document.getElementById('input-form').addEventListener("submit",function (e) {
+                e.preventDefault();
+                var vaultId = document.getElementById("VGS-Vault-Id").value;
+                var vgsEnv = document.getElementById("VGS-env").value;
+                contactId = document.getElementById('contact-id').value;
+                debitCardToken = document.getElementById('debit-card-token').value;
+
+                if(vaultId == '' ||  vgsEnv == '' || contactId == '' || debitCardToken == '') {
+                    return;
+                }
+
+                // VGS Collect form initialization
+                form = VGSCollect.create(
+                vaultId,
+                vgsEnv,
+                function (state) {
+
+                });
+        
+        
+                // Create VGS Collect field for credit card number
+                form.field("#card-number", {
+                    type: "card-number",
+                    name: "cardNumber",
+                    showCardIcon: true,
+                    successColor: "#4F8A10",
+                    errorColor: "#D8000C",
+                    placeholder: "4111 1111 1111 1111",
+                    validations: ["required", "validCardNumber"],
+                });
+        
+                // Create VGS Collect field for CVC
+                form.field("#card-cvc", {
+                    type: "card-security-code",
+                    name: "cvv",
+                    placeholder: "344",
+                    validations: ["required", "validCardSecurityCode"],
+                });
+        
+                form.field("#card-expiration-date", {
+                    type: "card-expiration-date",
+                    name: "expiryDate",
+                    placeholder: "01/2022",
+                    validations: ["required", "validCardExpirationDate"],
+                });
+
+                document.getElementById("card-details").classList.add("visible");
+
+            });
+    
+            document.getElementById("card-form").addEventListener("submit",function (e) {
+                e.preventDefault();
+
+                form.submit("/v1/contact/"+contactId+"/debitcard", {
+                    method: 'PATCH',
+                    headers: {
+                        'sd-debitcard-token': debitCardToken
+                    },
+                    data: (formValues) => {
+                        return {
+                            debitCard: {
+                                cardNumber: formValues['cardNumber'],
+                                cvv: formValues['cvv'],
+                                expiryMonth: formValues['expiryDate'],
+                                expiryYear: formValues['card-cvv'],
+                            }
+                        }
+                    }
+                }, function (status, data) {
+                    document.getElementById("result").innerHTML = JSON.stringify(
+                        data.json,
+                        null,
+                        4
+                    );
+                });
+            },
+            function (errors) {
+                document.getElementById("result").innerHTML = errors;
+            }
+            );
+      </script>
+    </body>
+</html>
