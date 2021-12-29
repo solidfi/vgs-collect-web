@@ -1,0 +1,140 @@
+<!-- Copyright 2021 Solid Financial Technologies, Inc -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="./style.css" />
+        <script type="text/javascript" src="https://js.verygoodvault.com/vgs-collect/2.11.0/vgs-collect.js"></script>
+    </head>
+    <body>
+        <div class="">
+            <form id="input-form">
+                <input id="VGS-Vault-Id" class="form-field" placeholder="VGS Vault Id" />
+                <input id="card-id" class="form-field" placeholder="Card Id" />
+                <input id="pin-token" class="form-field" placeholder="Debit Card Token" />
+                <select id="VGS-env" class="form-field">
+                    <option value="sandbox">Sandbox</option>
+                    <option value="live">Production</option>
+                </select>
+                <button type="submit" class="btn">
+                    Next
+                </button>
+            </form>
+            <div id="card-details">
+                <h2>Card Details:</h2>
+                <form id="card-form">
+                    <div id="last4" class="form-field"></div>
+                    <div class="group">
+                        <div id="card-expiration-date" class="form-field"></div>
+                        <div id="card-expiration-year" class="form-field"></div>
+                    </div>
+
+                    <div id="pin" class="form-field"></div>
+
+                    <button type="submit" class="btn">
+                        Submit
+                    </button>
+                </form>
+            </div>
+            <pre id="result">Submit a form to see result.</pre>
+        </div>
+
+        <!--Include script with VGS Collect form initialization-->
+        <script>
+            var form = null;
+            var cardId = null;
+            var pinToken = null;
+            document.getElementById('input-form').addEventListener("submit",function (e) {
+                e.preventDefault();
+                var vaultId = document.getElementById("VGS-Vault-Id").value;
+                var vgsEnv = document.getElementById("VGS-env").value;
+                cardId = document.getElementById('card-id').value;
+                pinToken = document.getElementById('pin-token').value;
+
+                if(vaultId == '' ||  vgsEnv == '' || cardId == '' || pinToken == '') {
+                    return;
+                }
+
+                // VGS Collect form initialization
+                form = VGSCollect.create(
+                vaultId,
+                vgsEnv,
+                function (state) {
+
+                });
+        
+        
+                // Create VGS Collect field for credit card number
+                form.field("#last4", {
+                    type: "number",
+                    name: "last4",
+                    showCardIcon: true,
+                    successColor: "#4F8A10",
+                    errorColor: "#D8000C",
+                    placeholder: "Last 4 digit of card number",
+                    validations: ["required", '/^([0-9]{4})$/'],
+                });
+        
+                // Create VGS Collect field for CVC
+                form.field("#pin", {
+                    type: "number",
+                    name: "pin",
+                    successColor: "#4F8A10",
+                    errorColor: "#D8000C",
+                    placeholder: "4 digit pin",
+                    validations: ["required", '/^([0-9]{4})$/'],
+                });
+        
+                form.field("#card-expiration-date", {
+                    type: "number",
+                    name: "expiryDate",
+                    successColor: "#4F8A10",
+                    errorColor: "#D8000C",
+                    placeholder: "01",
+                    validations: ["required", '/^([0-9]{2})$/'],
+                });
+
+                form.field("#card-expiration-year", {
+                    type: "number",
+                    name: "expiryMonth",
+                    successColor: "#4F8A10",
+                    errorColor: "#D8000C",
+                    placeholder: "2022",
+                    validations: ["required", '/^([0-9]{4})$/'],
+                });
+
+                document.getElementById("card-details").classList.add("visible");
+
+            });
+    
+            document.getElementById("card-form").addEventListener("submit",function (e) {
+                e.preventDefault();
+
+                form.submit("/v1/card/"+cardId+"/pin", {
+                    method: 'PATCH',
+                    headers: {
+                        'sd-pin-token': pinToken
+                    },
+                    data: (formValues) => {
+                        console.log(formValues['expiryDate'])
+                        return {
+                            last4: formValues['last4'],
+                            pin: formValues['pin'],
+                            expiryMonth: formValues['expiryDate'],
+                            expiryYear: formValues['expiryYear'],
+                        }
+                    }
+                }, function (status, data) {
+                    document.getElementById("result").innerHTML = JSON.stringify(
+                        data,
+                        null,
+                        4
+                    );
+                });
+            },
+            function (errors) {
+                document.getElementById("result").innerHTML = errors;
+            }
+            );
+      </script>
+    </body>
+</html>
