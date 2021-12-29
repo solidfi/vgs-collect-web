@@ -9,11 +9,11 @@
         <div class="">
             <form id="input-form">
                 <input id="VGS-Vault-Id" class="form-field" placeholder="VGS Vault Id" />
-                <input id="contact-id" class="form-field" placeholder="Contact Id" />
-                <input id="debit-card-token" class="form-field" placeholder="Debit Card Token" />
+                <input id="card-id" class="form-field" placeholder="Card Id" />
+                <input id="pin-token" class="form-field" placeholder="Debit Card Token" />
                 <select id="VGS-env" class="form-field">
                     <option value="sandbox">Sandbox</option>
-                    <option value="production">Production</option>
+                    <option value="live">Production</option>
                 </select>
                 <button type="submit" class="btn">
                     Next
@@ -22,11 +22,13 @@
             <div id="card-details">
                 <h2>Card Details:</h2>
                 <form id="card-form">
-                    <div id="card-number" class="form-field"></div>
+                    <div id="last4" class="form-field"></div>
                     <div class="group">
-                        <div id="card-cvc" class="form-field"></div>
                         <div id="card-expiration-date" class="form-field"></div>
+                        <div id="card-expiration-year" class="form-field"></div>
                     </div>
+
+                    <div id="pin" class="form-field"></div>
 
                     <button type="submit" class="btn">
                         Submit
@@ -39,16 +41,16 @@
         <!--Include script with VGS Collect form initialization-->
         <script>
             var form = null;
-            var contactId = null;
-            var debitCardToken = null;
+            var cardId = null;
+            var pinToken = null;
             document.getElementById('input-form').addEventListener("submit",function (e) {
                 e.preventDefault();
                 var vaultId = document.getElementById("VGS-Vault-Id").value;
                 var vgsEnv = document.getElementById("VGS-env").value;
-                contactId = document.getElementById('contact-id').value;
-                debitCardToken = document.getElementById('debit-card-token').value;
+                cardId = document.getElementById('card-id').value;
+                pinToken = document.getElementById('pin-token').value;
 
-                if(vaultId == '' ||  vgsEnv == '' || contactId == '' || debitCardToken == '') {
+                if(vaultId == '' ||  vgsEnv == '' || cardId == '' || pinToken == '') {
                     return;
                 }
 
@@ -62,29 +64,42 @@
         
         
                 // Create VGS Collect field for credit card number
-                form.field("#card-number", {
-                    type: "card-number",
-                    name: "cardNumber",
+                form.field("#last4", {
+                    type: "number",
+                    name: "last4",
                     showCardIcon: true,
                     successColor: "#4F8A10",
                     errorColor: "#D8000C",
-                    placeholder: "4111 1111 1111 1111",
-                    validations: ["required", "validCardNumber"],
+                    placeholder: "Last 4 digit of card number",
+                    validations: ["required", '/^([0-9]{4})$/'],
                 });
         
                 // Create VGS Collect field for CVC
-                form.field("#card-cvc", {
-                    type: "card-security-code",
-                    name: "cvv",
-                    placeholder: "344",
-                    validations: ["required", "validCardSecurityCode"],
+                form.field("#pin", {
+                    type: "number",
+                    name: "pin",
+                    successColor: "#4F8A10",
+                    errorColor: "#D8000C",
+                    placeholder: "4 digit pin",
+                    validations: ["required", '/^([0-9]{4})$/'],
                 });
         
                 form.field("#card-expiration-date", {
-                    type: "card-expiration-date",
+                    type: "number",
                     name: "expiryDate",
-                    placeholder: "01/2022",
-                    validations: ["required", "validCardExpirationDate"],
+                    successColor: "#4F8A10",
+                    errorColor: "#D8000C",
+                    placeholder: "01",
+                    validations: ["required", '/^([0-9]{2})$/'],
+                });
+
+                form.field("#card-expiration-year", {
+                    type: "number",
+                    name: "expiryMonth",
+                    successColor: "#4F8A10",
+                    errorColor: "#D8000C",
+                    placeholder: "2022",
+                    validations: ["required", '/^([0-9]{4})$/'],
                 });
 
                 document.getElementById("card-details").classList.add("visible");
@@ -94,24 +109,23 @@
             document.getElementById("card-form").addEventListener("submit",function (e) {
                 e.preventDefault();
 
-                form.submit("/v1/contact/"+contactId+"/debitcard", {
+                form.submit("/v1/card/"+cardId+"/pin", {
                     method: 'PATCH',
                     headers: {
-                        'sd-debitcard-token': debitCardToken
+                        'sd-pin-token': pinToken
                     },
                     data: (formValues) => {
+                        console.log(formValues['expiryDate'])
                         return {
-                            debitCard: {
-                                cardNumber: formValues['cardNumber'],
-                                cvv: formValues['cvv'],
-                                expiryMonth: formValues['expiryDate'],
-                                expiryYear: formValues['card-cvv'],
-                            }
+                            last4: formValues['last4'],
+                            pin: formValues['pin'],
+                            expiryMonth: formValues['expiryDate'],
+                            expiryYear: formValues['expiryYear'],
                         }
                     }
                 }, function (status, data) {
                     document.getElementById("result").innerHTML = JSON.stringify(
-                        data.json,
+                        data,
                         null,
                         4
                     );
