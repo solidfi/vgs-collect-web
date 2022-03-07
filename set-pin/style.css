@@ -1,0 +1,47 @@
+* {
+    box-sizing: border-box;
+  }
+  form {
+    width: 300px;
+  }
+.form-field {
+    width: 100%;
+    height: 40px;
+    position: relative;
+    background: white;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #c5c5c5;
+    padding: 0 10px;
+    outline: none;
+}
+iframe {
+    width: 100%;
+    height: 100%;
+}
+.group {
+    display: flex;
+    flex-flow: wrap;
+}
+.group div {
+    flex: 0 0 50%;
+}
+.group div:first-child {
+    border-radius: 4px 0 0 4px;
+}
+.group div:last-child {
+    border-radius: 0 4px 4px 0;
+}
+.btn {
+    height: 44px;
+    width: 100%;
+    background: #141414;
+    border: none;
+    color: white;
+}
+#card-details {
+    display: none;
+}
+#card-details.visible {
+    display: block;
+}
