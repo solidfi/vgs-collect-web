@@ -14,8 +14,9 @@ The purpose of this app is to show how to use the VGS Collect JavaScript SDK.For
 ## Run the app
 To Run the app run `npx serve`. then open `http://localhost:5000` in browser.
 
-## Parameters
 
+## Parameters
+### Parameters for set pin
 | Parameters    | Description   |
 | ------------- | ------------- |
 | VGS-Vault-Id  | vgs vault id |
@@ -23,6 +24,13 @@ To Run the app run `npx serve`. then open `http://localhost:5000` in browser.
 | pin-token     | Pin token you can get it from api |
 | VGS-env       | mode - live or sandbox |
 
+### Parameters for debit pull link card
+| Parameters    | Description   |
+| ------------- | ------------- |
+| VGS-Vault-Id  | vgs vault id |
+| contact-Id    | solid contact id |
+| token         | Token you can get it from api |
+| VGS-env       | mode - live or sandbox |
 
 ## Internals
 
