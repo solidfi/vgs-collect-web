@@ -24,6 +24,8 @@ To Run the app run `npx serve`. then open `http://localhost:5000` in browser.
 | pin-token     | Pin token you can get it from api |
 | VGS-env       | mode - live or sandbox |
 
+Note: The VGS vault ID's required for implementing the sample code can be requested via a Solid help desk ticket.
+
 ### Parameters for debit pull link card
 | Parameters    | Description   |
 | ------------- | ------------- |
