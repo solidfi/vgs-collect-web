@@ -12,7 +12,8 @@ Web based Solid-VGS Collect integration sample code
 The purpose of this app is to show how to use the VGS Collect JavaScript SDK.For complete information about the API, head to the [docs](https://www.verygoodsecurity.com/docs/vgs-collect/overview).
 
 ## Run the app
-To Run the app run `npx serve`. then open `http://localhost:5000` in browser.
+To Run the app run `npx serve`. then open `http://localhost:5000` in browser. 
+or run the html files under a local webserver(wamp, lamp, xampp...), openning the file directly in browser will not work due to CORS.
 
 
 ## Parameters
