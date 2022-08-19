@@ -95,7 +95,7 @@
 
                 form.field("#card-expiration-year", {
                     type: "number",
-                    name: "expiryMonth",
+                    name: "expiryYear",
                     successColor: "#4F8A10",
                     errorColor: "#D8000C",
                     placeholder: "2022",
@@ -110,7 +110,7 @@
                 e.preventDefault();
 
                 form.submit("/v1/card/"+cardId+"/pin", {
-                    method: 'PATCH',
+                    method: 'POST',
                     headers: {
                         'sd-pin-token': pinToken
                     },
