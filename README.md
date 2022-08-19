@@ -12,7 +12,9 @@ Web based Solid-VGS Collect integration sample code
 The purpose of this app is to show how to use the VGS Collect JavaScript SDK.For complete information about the API, head to the [docs](https://www.verygoodsecurity.com/docs/vgs-collect/overview).
 
 ## Run the app
-To Run the app run `npx serve`. then open `http://localhost:5000` in browser.
+To Run the app run `npx serve`. then open the generated localhost link browser. like `http://localhost:5000` or `http://localhost:3000`.
+
+or run the html files under a local webserver(wamp, lamp, xampp...), openning the file directly in browser will not work due to CORS.
 
 
 ## Parameters
@@ -23,6 +25,8 @@ To Run the app run `npx serve`. then open `http://localhost:5000` in browser.
 | card-Id       | solid card id |
 | pin-token     | Pin token you can get it from api |
 | VGS-env       | mode - live or sandbox |
+
+Note: The VGS vault ID's required for implementing the sample code can be requested via a Solid help desk ticket.
 
 ### Parameters for debit pull link card
 | Parameters    | Description   |
