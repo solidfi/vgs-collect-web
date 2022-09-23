@@ -26,6 +26,7 @@
                     <div class="group">
                         <div id="card-expiration-date" class="form-field"></div>
                         <div id="card-expiration-year" class="form-field"></div>
+                        <div id="card-cvv" class="form-field"></div>
                     </div>
 
 
@@ -91,6 +92,15 @@
                     validations: ["required", '/^([0-9]{4})$/'],
                 });
 
+                form.field("#card-cvv", {
+                    type: "card-security-code",
+                    name: "cvv",
+                    successColor: "#4F8A10",
+                    errorColor: "#D8000C",
+                    placeholder: "000",
+                    validations: ['required', 'validCardSecurityCode'],
+                });
+
                 document.getElementById("card-details").classList.add("visible");
 
             });
@@ -109,6 +119,7 @@
                                 cardNumber: formValues['cardNumber'],
                                 expiryMonth: formValues['expiryMonth'],
                                 expiryYear: formValues['expiryYear'],
+                                cvv: formValues['cvv'],
                                 address: {"addressType": "card", "city": "Bronx", "country": "US", "line1": "1250 Waters Pl", "line2": "", "postalCode": "10461", "state": "NY"}
                             }
                         }
