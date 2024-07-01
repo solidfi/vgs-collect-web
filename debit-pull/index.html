@@ -108,7 +108,7 @@
             document.getElementById("card-form").addEventListener("submit",function (e) {
                 e.preventDefault();
 
-                form.submit("/v1/contact/"+contactId+"/debitcard", {
+                form.submit("/v2/contact/"+contactId+"/debitcard", {
                     method: 'PATCH',
                     headers: {
                         'sd-debitcard-token': token,
