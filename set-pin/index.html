@@ -109,7 +109,7 @@
             document.getElementById("card-form").addEventListener("submit",function (e) {
                 e.preventDefault();
 
-                form.submit("/v1/card/"+cardId+"/pin", {
+                form.submit("/v2/card/"+cardId+"/pin", {
                     method: 'POST',
                     headers: {
                         'sd-pin-token': pinToken
